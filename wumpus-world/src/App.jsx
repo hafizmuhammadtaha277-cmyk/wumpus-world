@@ -6,10 +6,6 @@ import MetricsDashboard from "./components/MetricsDashboard.jsx";
 import ResolutionTrace from "./components/ResolutionTrace.jsx";
 import "./App.css";
 
-// ═══════════════════════════════════════════════
-//  Propositional Logic — Resolution Engine
-// ═══════════════════════════════════════════════
-
 class Literal {
   constructor(name, negated = false) {
     this.name = name;
@@ -484,31 +480,29 @@ export default function App() {
             /* Splash */
             <div className="ww-splash">
               <div className="splash-kicker">
-                Vol. I &mdash; Artificial Intelligence &mdash; Cave Navigation
+                Cave inference mode
               </div>
 
               <h2 className="splash-headline">
                 Wumpus
                 <br />
-                <em>Logic</em>
+                <em>Rift</em>
                 <br />
-                Agent
+                Navigator
               </h2>
 
               <p className="splash-deck">
-                A <strong>Knowledge-Based Agent</strong> navigates a
-                procedurally-generated cave using{" "}
-                <strong>Propositional Logic</strong> and a hand-coded
-                <strong> Resolution Refutation</strong> engine to deduce safe
-                cells before each move — no heuristics, no ML.
+                Explore the cave with a deductive inference engine. The system
+                reveals safe paths, marks hazards, and logs percepts using only
+                propositional logic and resolution-based reasoning.
               </p>
 
               <div className="splash-cta">
                 <button className="btn-splash" onClick={startGame}>
-                  Initialise Agent
+                  Launch Simulation
                 </button>
                 <span className="splash-hint">
-                  configure grid dimensions in the left panel
+                  choose a grid size and begin exploration
                 </span>
               </div>
             </div>

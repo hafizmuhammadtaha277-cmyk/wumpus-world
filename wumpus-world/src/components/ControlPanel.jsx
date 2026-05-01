@@ -11,9 +11,8 @@ export default function ControlPanel({
 }) {
   return (
     <aside className="ww-left">
-      {/* ── Episode Config ── */}
       <div className="panel-block">
-        <div className="panel-heading">Episode Config</div>
+        <div className="panel-heading">Agent Setup</div>
         <div className="dim-inputs">
           <div className="dim-input-wrap">
             <label>Rows</label>
@@ -41,14 +40,13 @@ export default function ControlPanel({
           </div>
         </div>
         <button className="btn-ww-primary" onClick={onStart}>
-          Initialise Agent
+          Deploy Agent
         </button>
       </div>
 
-      {/* ── Movement ── */}
       {hasGame && (
         <div className="panel-block">
-          <div className="panel-heading">Movement</div>
+          <div className="panel-heading">Traverse</div>
           <div className="dpad-grid">
             <div />
             <button
@@ -93,10 +91,9 @@ export default function ControlPanel({
         </div>
       )}
 
-      {/* ── Shoot Arrow ── */}
       {hasGame && (
         <div className="panel-block">
-          <div className="panel-heading">Shoot Arrow</div>
+          <div className="panel-heading">Fire Arrow</div>
           <div className="shoot-grid">
             {["up", "right", "left", "down"].map((d) => (
               <button
@@ -118,17 +115,15 @@ export default function ControlPanel({
         </div>
       )}
 
-      {/* ── Legend ── */}
       <div className="panel-block">
-        <div className="panel-heading">Cell Legend</div>
+        <div className="panel-heading">Cell Map</div>
 
         <div className="legend-row">
           <div
             className="legend-swatch"
             style={{
               background: "var(--agent-bg)",
-              borderColor: "var(--agent-rule)",
-              borderLeftWidth: 3,
+              borderColor: "var(--accent)",
             }}
           />
           <span>Agent position</span>
@@ -136,9 +131,9 @@ export default function ControlPanel({
         <div className="legend-row">
           <div
             className="legend-swatch"
-            style={{ background: "var(--visited-bg)" }}
+            style={{ background: "var(--visited-bg)", borderColor: "rgba(56,189,248,0.35)" }}
           />
-          <span>Visited &amp; explored</span>
+          <span>Visited & explored</span>
         </div>
         <div className="legend-row">
           <div
@@ -146,7 +141,6 @@ export default function ControlPanel({
             style={{
               background: "var(--safe-bg)",
               borderColor: "var(--safe-rule)",
-              borderLeftWidth: 3,
             }}
           />
           <span>KB proven safe</span>
@@ -154,7 +148,7 @@ export default function ControlPanel({
         <div className="legend-row">
           <div
             className="legend-swatch"
-            style={{ background: "var(--unknown-bg)" }}
+            style={{ background: "var(--unknown-bg)", borderColor: "rgba(139,92,246,0.35)" }}
           />
           <span>Unknown / unvisited</span>
         </div>
@@ -163,7 +157,7 @@ export default function ControlPanel({
             className="legend-swatch"
             style={{
               background: "var(--hazard-bg)",
-              borderColor: "var(--hazard-rule)",
+              borderColor: "var(--danger)",
             }}
           />
           <span>Confirmed hazard</span>
