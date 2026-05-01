@@ -7,9 +7,7 @@ from itertools import product as iproduct
 app = Flask(__name__)
 CORS(app)
 
-# ─────────────────────────────────────────────
 #  Propositional Logic & Resolution Engine
-# ─────────────────────────────────────────────
 
 
 class Literal:
@@ -73,6 +71,7 @@ def resolution_refutation(kb_clauses, query_literal):
     Returns (proved: bool, steps: int, trace: list)
     """
     # Negate the query and add to KB
+
     negated_query = Clause([query_literal.negate()])
     clauses = set(kb_clauses) | {negated_query}
     steps = 0
@@ -110,14 +109,12 @@ def resolution_refutation(kb_clauses, query_literal):
             return False, steps, trace
 
 
-# ─────────────────────────────────────────────
 #  Knowledge Base
-# ─────────────────────────────────────────────
 
 class KnowledgeBase:
     def __init__(self):
         self.clauses = set()
-        self.facts = {}   # variable_name -> True/False
+        self.facts = {}  
 
     def tell(self, clause):
         self.clauses.add(clause)
@@ -138,15 +135,12 @@ class KnowledgeBase:
         pit_var = f"P_{row}_{col}"
         wumpus_var = f"W_{row}_{col}"
 
-        # Check if already known unsafe
         if self.facts.get(pit_var) or self.facts.get(wumpus_var):
             return False, 0, []
 
-        # Prove ¬P AND ¬W via resolution
         total_steps = 0
         full_trace = []
 
-        # we want to prove ¬P, so negate = prove P leads to contradiction
         no_pit_lit = Literal(pit_var, negated=False)
         proved_no_pit, steps1, trace1 = resolution_refutation(
             self.clauses, Literal(pit_var, negated=True))
@@ -194,12 +188,7 @@ def get_neighbors(row, col, rows, cols):
     return [(r, c) for r, c in candidates if 0 <= r < rows and 0 <= c < cols]
 
 
-# ─────────────────────────────────────────────
-#  Game State
-# ─────────────────────────────────────────────
-
-games = {}  # session_id -> game state
-
+games = {}  
 
 def create_game(rows, cols, num_pits=None):
     if num_pits is None:
@@ -218,15 +207,12 @@ def create_game(rows, cols, num_pits=None):
 
     kb = KnowledgeBase()
 
-    # Structural axioms: exactly one wumpus
     wumpus_lits = [Literal(f"W_{r}_{c}") for r, c in cells]
-    kb.tell(Clause(wumpus_lits))  # at least one wumpus somewhere
+    kb.tell(Clause(wumpus_lits)) 
 
-    # Start cell is safe
     kb.tell_fact(f"P_0_0", False)
     kb.tell_fact(f"W_0_0", False)
 
-    # Add breeze/stench rules for all cells
     for r, c in cells:
         kb.add_breeze_rule(r, c, rows, cols)
         kb.add_stench_rule(r, c, rows, cols)
@@ -252,7 +238,6 @@ def create_game(rows, cols, num_pits=None):
         "wumpus_alive": True,
     }
 
-    # Process starting cell percepts
     _process_percepts(state)
     return state
 
@@ -267,7 +252,6 @@ def _process_percepts(state):
                      for pr, pc in state["pits"]
                      if (pr, pc) in [n for n in get_neighbors(r, c, rows, cols)] or (pr == r and pc == c))
 
-    # Proper breeze check: adjacent to any pit?
     has_breeze = any((nr, nc) in state["pits"]
                      for nr, nc in get_neighbors(r, c, rows, cols))
     has_stench = any((nr, nc) == state["wumpus"] for nr, nc in get_neighbors(
@@ -320,7 +304,7 @@ def _infer_safe_cells(state):
                 new_safe.append(cell)
 
     state["total_inference_steps"] += total_steps
-    state["resolution_trace"] = trace[-20:]  # keep last 20 steps
+    state["resolution_trace"] = trace[-20:] 
     return new_safe
 
 
@@ -341,16 +325,10 @@ def serialize_state(state):
         "total_inference_steps": state["total_inference_steps"],
         "resolution_trace": state["resolution_trace"],
         "wumpus_alive": state["wumpus_alive"],
-        # Reveal actual positions on game over
         "pits": state["pits"] if state["game_over"] else [],
         "wumpus": list(state["wumpus"]) if state["game_over"] else [],
         "gold": list(state["gold"]),
     }
-
-
-# ─────────────────────────────────────────────
-#  Routes
-# ─────────────────────────────────────────────
 
 @app.route("/api/new_game", methods=["POST"])
 def new_game():
@@ -392,7 +370,6 @@ def move():
     if [nr, nc] not in state["visited"]:
         state["visited"].append([nr, nc])
 
-    # Check hazards
     if [nr, nc] in [[p[0], p[1]] for p in state["pits"]] or (nr, nc) in state["pits"]:
         state["game_over"] = True
         state["win"] = False
@@ -412,7 +389,6 @@ def move():
     _process_percepts(state)
     _infer_safe_cells(state)
 
-    # Check gold
     if (nr, nc) == state["gold"] or [nr, nc] == list(state["gold"]):
         state["has_gold"] = True
         state["message"] = f"✨ Gold found at ({nr},{nc})! Head back to (0,0) to win!"
@@ -447,7 +423,6 @@ def shoot():
     dr, dc = {"up": (-1, 0), "down": (1, 0), "left": (0, -1),
               "right": (0, 1)}.get(direction, (0, 0))
 
-    # Arrow travels in direction until wall
     ar, ac = r + dr, c + dc
     hit_wumpus = False
     while 0 <= ar < state["rows"] and 0 <= ac < state["cols"]:
